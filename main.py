@@ -1,40 +1,33 @@
-from kivy.app import App
-from kivy.uix.widget import Widget
-from kivy.graphics import Line, Color
-from kivy.clock import Clock
+name: Build Android APK
 
-class CyclotronWidget(Widget):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.xp = 0
-        self.yp = 0
-        self.vx = 0
-        self.vy = 200
-        self.B = 1.2
-        self.qm = 9.58e7
-        self.dt = 0.01
+on:
+  push:
+    branches: [ "main" ]
 
-        with self.canvas:
-            Color(0, 1, 0)
-            self.line = Line(points=[])
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-        Clock.schedule_interval(self.update, 1/60)
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    def update(self, dt):
-        ax = self.qm * self.vy * self.B
-        ay = -self.qm * self.vx * self.B
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
 
-        self.vx += ax * self.dt
-        self.vy += ay * self.dt
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y libtinfo5
 
-        self.xp += self.vx * self.dt
-        self.yp += self.vy * self.dt
+      - name: Build APK with Buildozer
+        uses: digreatbrian/buildozer-action@v2
+        with:
+          python-version: "3.11"
+          buildozer-cmd: "android debug"
 
-        cx, cy = self.center
-        self.line.points += [cx + self.xp*0.01, cy + self.yp*0.01]
-
-class CyclotronApp(App):
-    def build(self):
-        return CyclotronWidget()
-
-CyclotronApp().run()
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cyclotron-apk
+          path: bin/*.apk
