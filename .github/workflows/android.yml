@@ -9,16 +9,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-    - name: Build with Buildozer
-      uses: digreatbrian/buildozer-action@v2
-      with:
-        command: buildozer android debug
+      - name: Build with Buildozer
+        uses: digreatbrian/buildozer-action@v2
+        with:
+          command: buildozer android debug
 
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: cyclotron-apk
-        path: bin/*.apk
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: cyclotron-apk
+          path: bin/*.apk
