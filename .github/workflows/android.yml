@@ -15,9 +15,10 @@ jobs:
     - name: Build with Buildozer
       uses: digreatbrian/buildozer-action@v2
       with:
-        command: buildizer android debug
-        - name: Upload APK
-  uses: actions/upload-artifact@v4
-  with:
-    name: cyclotron-apk
-    path: bin/*.apk
+        command: buildozer android debug
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: cyclotron-apk
+        path: bin/*.apk
