@@ -9,15 +9,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Build with Buildozer
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Build APK with Buildozer
         uses: digreatbrian/buildozer-action@v2
         with:
-          buildozer-cmd: android debug
+          python-version: "3.11"
+          buildozer-cmd: "android debug"
 
-      - name: Upload APK
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: cyclotron-apk
